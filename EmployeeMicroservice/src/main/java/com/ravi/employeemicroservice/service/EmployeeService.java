@@ -14,8 +14,18 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public List<Employee> getAllEmployeesByDepartment(String departmentId) {
-        return employeeRepository.findByDepartmentId(departmentId);
+    public List<Employee> getAllEmployeesByDepartment(String departmentId) throws Exception {
+
+
+        List<Employee> listOfEmployeeByDepartment = employeeRepository.findByDepartmentId(departmentId);
+      if(listOfEmployeeByDepartment.size() != 0)
+      {
+          return listOfEmployeeByDepartment;
+      }
+      else
+      {
+          throw new Exception();
+      }
     }
 
     public List<Employee> getAllEmployees() {

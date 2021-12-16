@@ -67,7 +67,7 @@ public class EmployeeController {
     }*/
 
     @RequestMapping(method = RequestMethod.POST, value = "/employees/departments/{departmentId}")
-    public String addEmployee(@RequestBody Employee employee, @PathVariable("departmentId") String departmentId) {
+    public String addEmployee(@RequestBody Employee employee, @PathVariable("departmentId") String departmentId) throws Exception {
         //...
         DepartmentList departmentList = restTemplate.getForObject("http://Department-Microservice/departments/", DepartmentList.class);
 
@@ -83,13 +83,13 @@ public class EmployeeController {
         }
         else
         {
-            return "Invalid Department Id";
+            throw new Exception();
         }
     }
 
     //Get All employees which are in same department
     @RequestMapping("/employees/departments/{departmentId}")
-    public EmployeeListByDepartment getAllEmployeesByDepartment(@PathVariable("departmentId") String departmentId) {
+    public EmployeeListByDepartment getAllEmployeesByDepartment(@PathVariable("departmentId") String departmentId) throws Exception {
         List<Employee> listOfEmployeesByDepartmentId;
         listOfEmployeesByDepartmentId = employeeService.getAllEmployeesByDepartment(departmentId);
         employeeListByDepartment.setEmployeeListByDepartment(listOfEmployeesByDepartmentId);
@@ -99,7 +99,7 @@ public class EmployeeController {
 
     //Update Existing Employee
     @RequestMapping(method = RequestMethod.PUT, value = "/employees/departments/{departmentId}")
-    public String updateEmployee(@RequestBody Employee employee, @PathVariable("departmentId") String departmentId) {
+    public String updateEmployee(@RequestBody Employee employee, @PathVariable("departmentId") String departmentId) throws Exception {
         //...
 
         DepartmentList departmentList = restTemplate.getForObject("http://Department-Microservice/departments/", DepartmentList.class);
@@ -116,7 +116,7 @@ public class EmployeeController {
         }
         else
         {
-            return "Invalid Department Id";
+            throw new Exception();
         }
 
 
