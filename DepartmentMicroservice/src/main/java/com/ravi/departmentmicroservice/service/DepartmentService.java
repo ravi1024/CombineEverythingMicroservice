@@ -2,6 +2,7 @@ package com.ravi.departmentmicroservice.service;
 
 import com.ravi.departmentmicroservice.model.Department;
 import com.ravi.departmentmicroservice.repository.DepartmentRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class DepartmentService {
 

@@ -3,10 +3,17 @@ package com.ravi.resourcemanagementservice.controller;
 import com.ravi.resourcemanagementservice.exception.DepartmentNotFoundException;
 import com.ravi.resourcemanagementservice.exception.EmployeeNotFoundException;
 import com.ravi.resourcemanagementservice.model.*;
+import com.ravi.resourcemanagementservice.service.MyUserDetailsService;
 import com.ravi.resourcemanagementservice.service.RMSService;
+import com.ravi.resourcemanagementservice.util.JwtUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +28,59 @@ public class RMSController {
 
     @Autowired
     private RMSService rmsService;
+
+
+    //JWT ----------
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtil jwtTokenUtil;
+
+    @Autowired
+    private MyUserDetailsService userDetailsService;
+
+
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+            );
+        }
+        catch (BadCredentialsException e) {
+            throw new Exception("Incorrect username or password", e);
+        }
+
+
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(authenticationRequest.getUsername());
+
+        final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+
+    //Welcome User and Admin --------------
+
+    @RequestMapping("/hello")
+    public String sayHello() {
+        return ("<h1>Welcome!!<h1>");
+    }
+
+    @RequestMapping("/admin")
+    public String sayHelloToAdmin() {
+        return ("<h1>Welcome Admin!!<h1>");
+    }
+
+    @RequestMapping("/user")
+    public String sayHelloToUser() {
+        return ("<h1>Welcome User!!<h1>");
+    }
+
+    //----------------------------------Employee methods---------------------
 
     //Get All employees List
     @RequestMapping("/employees")
